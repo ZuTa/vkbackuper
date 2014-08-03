@@ -1,8 +1,10 @@
-from bottle import route, run, template
 
+# A very simple Bottle Hello World app for you to get started with...
+from bottle import default_app, route
 
 @route('/')
-def main():
-    return '<h1> Hello, Victoria </h1>'
+def hello_world():
+    return 'Hello from Bottle!'
 
-run(host='localhost', port=8082)
+application = default_app()
+
