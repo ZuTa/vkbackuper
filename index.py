@@ -1,4 +1,4 @@
-from bottle import default_app, route, redirect,run
+from bottle import default_app, route, redirect, run, request
 
 APP_ID = '4488301'
 AUTH_URL = 'https://oauth.vk.com/authorize?client_id=' + APP_ID + '&scope=4&redirect_uri=http://zuta.pythonanywhere.com/start&response_type=code&v=5.23'
