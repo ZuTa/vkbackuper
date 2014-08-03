@@ -1,10 +1,16 @@
+from bottle import default_app, route, redirect,run
 
-# A very simple Bottle Hello World app for you to get started with...
-from bottle import default_app, route
+APP_ID = '4488301'
+AUTH_URL = 'https://oauth.vk.com/authorize?client_id=' + APP_ID + '&scope=4&redirect_uri=http://zuta.pythonanywhere.com/start&response_type=code&v=5.23'
 
 @route('/')
-def hello_world():
-    return '<h1>Hello from ZuTa and Victoria!</h1>'
+def login():
+    redirect(AUTH_URL)
+
+@route('/start')
+def start():
+    return 'Hello, code = ' + request.query.code
 
 application = default_app()
 
+run(host='localhost',port='8083')
