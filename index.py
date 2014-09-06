@@ -32,7 +32,7 @@ def welcome():
 
     args['photo_albums_count'] = photos.get_photo_albums_count(user.access_token)
 
-    args['photos_count'] = photos.get_all_photos(user.access_token)['count']
+    args['photos_count'] = photos.get_all_photos_count(user.access_token)
 
     return args
 
