@@ -52,7 +52,12 @@ def init():
     if config:
         return
 
-    config = Config.parse(CONFIG_FILE)
+    import os
+
+    current_dir = os.path.dirname(__file__)
+    config_file_path = os.path.join(current_dir, CONFIG_FILE)
+
+    config = Config.parse(config_file_path)
 
     common.update_api_version(config.api_version)
 
