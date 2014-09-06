@@ -11,7 +11,7 @@ def index():
     auth.init()
 
     url = auth.get_auth_url(REDIRECT_URI)
-    
+
     bottle.redirect(url)
 
 @bottle.route('/login')
@@ -19,7 +19,7 @@ def login():
     if bottle.request.query.code:
         global user
 
-        user = auth.login(bottle.request.query.code, REDIRECT_URI) 
+        user = auth.login(bottle.request.query.code, REDIRECT_URI)
 
         bottle.redirect('/welcome')
     else:
