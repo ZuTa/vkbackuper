@@ -1,13 +1,16 @@
-def get_photo_albums_count(access_token):
-    url = create_method_url('photos.getAlbumsCount', access_token)
+import common
 
-    res = make_request(url)
+
+def get_photo_albums_count(access_token):
+    url = common.create_method_url('photos.getAlbumsCount', access_token)
+
+    res = common.make_request(url)
 
     return res['response']
 
 def get_all_photos(access_token):
-    url = create_method_url('photos.getAll', access_token, photo_sizes=1)
+    url = common.create_method_url('photos.getAll', access_token, photo_sizes=1)
 
-    res = make_method_request(url)
+    res = common.make_method_request(url)
 
     return dict(count=res['count'])
