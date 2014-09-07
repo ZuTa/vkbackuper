@@ -6,21 +6,34 @@ from beaker.middleware import SessionMiddleware
 REDIRECT_URI = 'http://zuta.pythonanywhere.com/login'
 
 user = None
+auth_url = None
+
+def is_session_new():
+    session = bottle.request.environ.get('beaker.session')
+
+    return session.get('user', None) is None
+
+def refresh_data():
+    session = bottle.request.environ.get('beaker.session')
+
+    global user
+    user = session['user']
 
 @bottle.route('/')
 def index():
-    auth.init()
-
-    url = auth.get_auth_url(REDIRECT_URI)
-
-    bottle.redirect(url)
+    if is_session_new():
+        bottle.redirect(auth_url)
+    else:
+        bottle.redirect('/welcome')
 
 @bottle.route('/login')
 def login():
-    if bottle.request.query.code:
-        global user
+    if not is_session_new():
+        bottle.redirect('/welcome')
 
-        user = auth.login(bottle.request.query.code, REDIRECT_URI)
+    if bottle.request.query.code:
+        session = bottle.request.environ.get('beaker.session')
+        session['user'] = auth.login(bottle.request.query.code, REDIRECT_URI)
 
         bottle.redirect('/welcome')
     else:
@@ -29,6 +42,11 @@ def login():
 @bottle.route('/welcome')
 @bottle.view('welcome')
 def welcome():
+    if is_session_new():
+        bottle.redirect('/')
+    else:
+        refresh_data()
+
     args = users.get_user_info(user.access_token)
 
     args['photo_albums_count'] = photos.get_photo_albums_count(user.access_token)
@@ -38,9 +56,12 @@ def welcome():
     return args
 
 
+auth.init()
+auth_url = auth.get_auth_url(REDIRECT_URI)
+
 session_opts = {
     'session.type': 'file',
-    'session.cookie_expires': 300,
+    'session.cookie_expires': 43200,
     'session.data_dir': './data',
     'session.auto': True
 }
