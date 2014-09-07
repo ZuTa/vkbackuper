@@ -13,6 +13,10 @@ class Archivator(object):
         self._source = source
         self._destination = destination
 
+    @property
+    def destination(self):
+        return self._destination
+
     def archive(self):
         result = True
 

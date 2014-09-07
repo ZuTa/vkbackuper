@@ -1,4 +1,5 @@
 import bottle
+from utils.common import pack
 
 from api import auth, users, photos
 from beaker.middleware import SessionMiddleware
@@ -64,7 +65,14 @@ def download_photos():
 
     name_to_url = zip(xrange(len(all_photos)), [photo.url for photo in all_photos])
 
-    return str(all_photos[132].url)
+    arc = pack(name_to_url)
+
+    bottle.redirect('/static/{}'.format(arc))
+
+from bottle import static_file
+@bottle.route('/static/<filename>')
+def server_static(filename):
+    return static_file(filename, root='/home/ZuTa/vkbackup/utils/archives')
 
 auth.init()
 auth_url = auth.get_auth_url(REDIRECT_URI)
@@ -77,3 +85,4 @@ session_opts = {
 }
 
 application = SessionMiddleware(bottle.default_app(), session_opts)
+bottle.debug(True)

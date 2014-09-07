@@ -1,8 +1,7 @@
 import os
 import uuid
-import urllib
+import urllib2
 import shutil
-
 
 class Downloader(object):
     def __init__(self, destination, data):
@@ -23,11 +22,22 @@ class Downloader(object):
 
         os.makedirs(self._destination)
 
-        try:
-            for file_name, url in self._data:
-                urllib.urlretrieve(url, os.path.join(self._destination, "{}.jpg".format(file_name)))
-        except:
-            result = False
+        for file_name, url in self._data:
+            local_file = os.path.join(self._destination, "{}.jpg".format(file_name))
+
+            resp = urllib2.urlopen(url)
+
+            try:
+                f = open(local_file, 'wb')
+                block_size = 8192
+                while True:
+                    chunk = resp.read(block_size)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+            finally:
+                f.flush()
+                f.close()
 
         if not result:
             shutil.rmtree(self._destination)

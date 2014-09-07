@@ -1,3 +1,5 @@
+utils/archives
+utils/downloads
 api/config.json
 
 *.swp
