@@ -62,6 +62,8 @@ def download_photos():
 
     all_photos = photos.get_all_photos(user.access_token)
 
+    name_to_url = zip(xrange(len(all_photos)), [photo.url for photo in all_photos])
+
     return str(all_photos[132].url)
 
 auth.init()
