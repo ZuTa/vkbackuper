@@ -78,10 +78,9 @@ auth.init()
 auth_url = auth.get_auth_url(REDIRECT_URI)
 
 session_opts = {
-    'session.type': 'ext:google',
-    #'session.type': 'file',
+    'session.type': 'file',
     'session.key': 'vkbackuper.beaker.session.id',
-    'session.cookie_expires': 43200,
+    'session.data_dir': './Data',
     'session.auto': True
 }
 
