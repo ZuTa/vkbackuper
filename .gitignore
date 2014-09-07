@@ -1,5 +1,5 @@
-utils/archives/[a-z,0-9]*
-utils/downloads/[a-z,0-9]*
+utils/archives
+utils/downloads
 
 api/config.json
 gaenv
