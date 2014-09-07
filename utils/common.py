@@ -15,8 +15,8 @@ def fetch_folder_path(path):
 
     return downloads_path
 
-downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER)
-archives_folder = fetch_folder_path(ARCHIVES_FOLDER)
+#downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER)
+#archives_folder = fetch_folder_path(ARCHIVES_FOLDER)
 
 def pack(data):
     downloader = Downloader(downloads_folder, data)
