@@ -24,10 +24,12 @@ def parse_photos(items, callback):
     for item in items:
         max_size, url = 0, None
         for inner_item in item:
-            m = re.match(r"photo_(d+)", inner_item)
+            m = re.match(r"photo_(\d+)", inner_item)
             if m:
-                size = re.group(1)
-                if size > max_size: max_size = size, url = item[inner_item]
+                size = m.group(1)
+                if size > max_size:
+                    max_size = size
+                    url = item[inner_item]
 
         callback(Photo(int(item['id']), int(item['album_id']), item['text'], datetime.fromtimestamp(float(item['date']) / 1e3), url))
 
@@ -42,4 +44,3 @@ def get_all_photos(access_token):
     parse_photos(json['items'], result.append)
 
     return result
-
