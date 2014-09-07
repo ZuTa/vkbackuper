@@ -1,7 +1,7 @@
 import bottle
-import bottle_session
 
 from api import auth, users, photos
+from beaker.middleware import SessionMiddleware
 
 REDIRECT_URI = 'http://zuta.pythonanywhere.com/login'
 
@@ -38,8 +38,11 @@ def welcome():
     return args
 
 
-application = bottle.default_app()
+session_opts = {
+    'session.type': 'file',
+    'session.cookie_expires': 300,
+    'session.data_dir': './data',
+    'session.auto': True
+}
 
-session_plugin = bottle_session.SessionPlugin(cookie_lifetime=10)
-
-application.install(session_plugin)
+application = SessionMiddleware(bottle.default_app(), session_opts)
