@@ -87,3 +87,6 @@ session_opts = {
 
 application = SessionMiddleware(bottle.default_app(), session_opts)
 bottle.debug(True)
+
+
+application.run(host='0.0.0.0')
