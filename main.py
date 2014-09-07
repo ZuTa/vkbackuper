@@ -86,4 +86,6 @@ session_opts = {
 
 application = SessionMiddleware(bottle.default_app(), session_opts)
 
-bottle.run(app=application, port=33507, debug=True)
+import os
+port = int(os.environ.get("PORT", 5000))
+bottle.run(app=application, host='0.0.0.0', port=port, debug=True)
