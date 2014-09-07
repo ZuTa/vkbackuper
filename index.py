@@ -1,4 +1,5 @@
 import bottle
+import bottle_session
 
 from api import auth, users, photos
 
@@ -38,3 +39,7 @@ def welcome():
 
 
 application = bottle.default_app()
+
+session_plugin = bottle_session.SessionPlugin(cookie_lifetime=10)
+
+application.install(session_plugin)
