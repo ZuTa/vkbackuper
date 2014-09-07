@@ -15,10 +15,12 @@
             <td>Photos:</td>
             <td>
                 you have {{photos_count}} photos and {{photo_albums_count}} albums.
+                {{all}} photos downloaded.
             </td>
         </tr>
-
     </table>
+
+    <a href="/download-photos">Download photos </a>
 </body>
 
 </html>

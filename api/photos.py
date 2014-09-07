@@ -26,7 +26,7 @@ def parse_photos(items, callback):
         for inner_item in item:
             m = re.match(r"photo_(\d+)", inner_item)
             if m:
-                size = m.group(1)
+                size = int(m.group(1))
                 if size > max_size:
                     max_size = size
                     url = item[inner_item]

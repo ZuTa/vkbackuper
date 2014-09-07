@@ -5,7 +5,6 @@ from beaker.middleware import SessionMiddleware
 
 REDIRECT_URI = 'http://zuta.pythonanywhere.com/login'
 
-user = None
 auth_url = None
 
 def is_session_new():
@@ -13,11 +12,10 @@ def is_session_new():
 
     return session.get('user', None) is None
 
-def refresh_data():
+def get_user():
     session = bottle.request.environ.get('beaker.session')
 
-    global user
-    user = session['user']
+    return session['user']
 
 @bottle.route('/')
 def index():
@@ -44,8 +42,8 @@ def login():
 def welcome():
     if is_session_new():
         bottle.redirect('/')
-    else:
-        refresh_data()
+
+    user = get_user()
 
     args = users.get_user_info(user.access_token)
 
@@ -55,6 +53,16 @@ def welcome():
 
     return args
 
+@bottle.route('/download-photos')
+def download_photos():
+    if is_session_new():
+        bottle.redirect('/')
+
+    user = get_user()
+
+    all_photos = photos.get_all_photos(user.access_token)
+
+    return str(all_photos[132].url)
 
 auth.init()
 auth_url = auth.get_auth_url(REDIRECT_URI)
