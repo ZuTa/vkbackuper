@@ -4,7 +4,6 @@ from downloader import Downloader
 from archivator import Archivator
 
 DOWNLOADS_FOLDER = "downloads"
-
 ARCHIVES_FOLDER = "archives"
 
 def fetch_folder_path(path):
@@ -15,10 +14,10 @@ def fetch_folder_path(path):
 
     return downloads_path
 
-downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER)
-archives_folder = fetch_folder_path(ARCHIVES_FOLDER)
-
 def pack(data):
+    downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER)
+    archives_folder = fetch_folder_path(ARCHIVES_FOLDER)
+
     downloader = Downloader(downloads_folder, data)
     if downloader.download():
         archivator = Archivator(downloader.destination, os.path.join(archives_folder, "{}.zip".format(downloader.uid)))
