@@ -15,10 +15,10 @@ def fetch_folder_path(path):
     return downloads_path
 
 def pack(data):
-    downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER)
+    d_f = fetch_folder_path(DOWNLOADS_FOLDER)
     archives_folder = fetch_folder_path(ARCHIVES_FOLDER)
 
-    downloader = Downloader(downloads_folder, data)
+    downloader = Downloader(d_f, data)
     if downloader.download():
         archivator = Archivator(downloader.destination, os.path.join(archives_folder, "{}.zip".format(downloader.uid)))
         archivator.archive()
