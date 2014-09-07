@@ -34,13 +34,16 @@ def parse_photos(items, callback):
         callback(Photo(int(item['id']), int(item['album_id']), item['text'], datetime.fromtimestamp(float(item['date']) / 1e3), url))
 
 def get_all_photos(access_token):
-    url = common.create_method_url('photos.getAll', access_token, count=MAX_PHOTOS_TO_RETURN, offset=0)
-
-    json = common.make_method_request(url)
-
-    total_count = int(json['count'])
-
     result = []
-    parse_photos(json['items'], result.append)
+    offset = 0
+    while True:
+        url = common.create_method_url('photos.getAll', access_token, count=MAX_PHOTOS_TO_RETURN, offset=offset)
+        json = common.make_method_request(url)
+
+        parse_photos(json['items'], result.append)
+
+        offset += len(json['items'])
+        if int(json['count']) - offset == 0:
+            break
 
     return result
