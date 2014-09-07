@@ -4,7 +4,7 @@ from utils.common import pack
 from api import auth, users, photos
 from beaker.middleware import SessionMiddleware
 
-REDIRECT_URI = 'http://zuta.pythonanywhere.com/login'
+REDIRECT_URI = 'http://vk-backuper.appspot.com/login'
 
 auth_url = None
 
@@ -78,9 +78,10 @@ auth.init()
 auth_url = auth.get_auth_url(REDIRECT_URI)
 
 session_opts = {
-    'session.type': 'file',
+    'session.type': 'ext:google',
+    #'session.type': 'file',
+    'session.key': 'vkbackuper.beaker.session.id',
     'session.cookie_expires': 43200,
-    'session.data_dir': './data',
     'session.auto': True
 }
 
