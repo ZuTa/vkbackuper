@@ -30,7 +30,7 @@ def parse_photos(items, callback):
                 if size > max_size:
                     max_size = size
                     url = item[inner_item]
-
+        url = url.replace(".vk.me/", ".vk.com/")
         callback(Photo(int(item['id']), int(item['album_id']), item['text'], datetime.fromtimestamp(float(item['date']) / 1e3), url))
 
 def get_all_photos(access_token):
