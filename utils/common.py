@@ -15,6 +15,7 @@ def fetch_folder_path(path):
     return downloads_path
 
 def pack(data):
+    return None
     downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER)
     archives_folder = fetch_folder_path(ARCHIVES_FOLDER)
 
