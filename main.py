@@ -79,13 +79,10 @@ auth_url = auth.get_auth_url(REDIRECT_URI)
 
 session_opts = {
     'session.type': 'file',
-    'session.key': 'vkbackuper.beaker.session.id',
-    'session.data_dir': './Data',
+    'session.cookie_expires': 43200,
+    'session.data_dir': './data',
     'session.auto': True
 }
 
 application = SessionMiddleware(bottle.default_app(), session_opts)
-
-import os
-port = int(os.environ.get("PORT", 5000))
-bottle.run(app=application, host='0.0.0.0', port=port, debug=True)
+bottle.debug(True)
