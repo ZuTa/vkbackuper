@@ -1,6 +1,8 @@
 utils/archives
 utils/downloads
+
 api/config.json
+gaenv
 
 *.swp
 

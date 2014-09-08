@@ -4,7 +4,7 @@ from utils.common import pack
 from api import auth, users, photos
 from beaker.middleware import SessionMiddleware
 
-REDIRECT_URI = 'http://zuta.pythonanywhere.com/login'
+REDIRECT_URI = 'http://vk-backuper.appspot.com/login'
 
 auth_url = None
 
