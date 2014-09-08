@@ -1,12 +1,18 @@
-import bottle
-from utils.common import pack
+import os, bottle
 
+from utils.common import pack
 from api import auth, users, photos
 from beaker.middleware import SessionMiddleware
 
+
+ARCHIVES_RELATIVE_PATH = "utils/archives"
 REDIRECT_URI = 'http://zuta.pythonanywhere.com/login'
 
 auth_url = None
+arhive_path = None
+
+def current_dir():
+    return os.path.dirname(__file__)
 
 def is_session_new():
     session = bottle.request.environ.get('beaker.session')
@@ -67,12 +73,14 @@ def download_photos():
 
     arc = pack(name_to_url)
 
-    bottle.redirect('/static/{}'.format(arc))
+    bottle.redirect('/archive/{}'.format(arc))
 
-from bottle import static_file
-@bottle.route('/static/<filename>')
-def server_static(filename):
-    return static_file(filename, root='/home/ZuTa/vkbackup/utils/archives')
+@bottle.route('/archive/<arcname>')
+def download_archive(arcname):
+    return bottle.static_file(arcname, root=archive_path)
+
+
+archive_path = os.path.join(current_dir(), ARCHIVES_RELATIVE_PATH)
 
 auth.init()
 auth_url = auth.get_auth_url(REDIRECT_URI)
