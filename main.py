@@ -1,4 +1,4 @@
-import os, bottle
+import os, bottle, logging
 
 from utils.common import pack
 from api import auth, users, photos
@@ -67,11 +67,15 @@ def download_photos():
 
     user = get_user()
 
+    logging.info('Start retrieving info about photos for user with {} id'.format( user.user_id))
     all_photos = photos.get_all_photos(user.access_token)
+    logging.info('End retrieving info about photos for user with {} id'.format(  user.user_id))
 
     name_to_url = zip(xrange(len(all_photos)), [photo.url for photo in all_photos])
 
+    logging.info('Downloading and packing photos for user with {} id'.format(  user.user_id))
     arc = pack(name_to_url)
+    logging.info('Done for user with {} id'.format(  user.user_id))
 
     bottle.redirect('/archive/{}'.format(arc))
 
@@ -79,6 +83,11 @@ def download_photos():
 def download_archive(arcname):
     return bottle.static_file(arcname, root=archive_path)
 
+
+log_file_path = os.path.join(current_dir(), 'debug.log')
+
+logging.basicConfig(format='%(asctime)s %(message)s',filename=log_file_path, filemode='w', level=logging.DEBUG)
+logging.info(log_file_path)
 
 archive_path = os.path.join(current_dir(), ARCHIVES_RELATIVE_PATH)
 
