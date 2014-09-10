@@ -1,6 +1,6 @@
 import os, bottle, logging
 
-from utils.common import pack
+from utils import common
 from api import auth, users, photos
 from beaker.middleware import SessionMiddleware
 
@@ -71,10 +71,10 @@ def download_photos():
     all_photos = photos.get_all_photos(user.access_token)
     logging.info('End retrieving info about photos for user with {} id'.format(user.user_id))
 
-    name_to_url = [(os.path.join(photo.album.title, '{}.jpg'.format(index)), photo.url) for index, photo in enumerate(all_photos)])
+    name_to_url = [(os.path.join(common.replace_spaces(photo.album.title), '{}.jpg'.format(index)), photo.url) for index, photo in enumerate(all_photos)]
     return str(name_to_url)
     logging.info('Downloading and packing photos for user with {} id'.format(user.user_id))
-    arc = pack(name_to_url)
+    arc = common.pack(name_to_url)
     logging.info('Done for user with {} id'.format(user.user_id))
 
     bottle.redirect('/archive/{}'.format(arc))

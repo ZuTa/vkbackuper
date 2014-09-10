@@ -1,10 +1,14 @@
-import os
+import os, re
 
 from downloader import Downloader
 from archivator import Archivator
 
 DOWNLOADS_FOLDER = "downloads"
 ARCHIVES_FOLDER = "archives"
+
+def replace_spaces(s):
+    s = s.strip()
+    return re.sub(r'\s+','_', s)
 
 def fetch_folder_path(path):
     current_dir = os.path.dirname(__file__)
