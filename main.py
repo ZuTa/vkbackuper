@@ -72,7 +72,7 @@ def download_photos():
     logging.info('End retrieving info about photos for user with {} id'.format(user.user_id))
 
     name_to_url = [(os.path.join(common.replace_spaces(photo.album.title), '{}.jpg'.format(index)), photo.url) for index, photo in enumerate(all_photos)]
-    return str(name_to_url)
+
     logging.info('Downloading and packing photos for user with {} id'.format(user.user_id))
     arc = common.pack(name_to_url)
     logging.info('Done for user with {} id'.format(user.user_id))

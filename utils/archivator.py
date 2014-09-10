@@ -5,8 +5,10 @@ import sys
 def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
         for f in files:
-            p = os.path.join(root, f)
-            zip.write(p, os.path.basename(p))
+            rel = os.path.relpath(root, path)
+            dest = os.path.join(rel, f)
+
+            zip.write(os.path.join(root, f), dest)
 
 class Archivator(object):
     def __init__(self, source, destination):

@@ -2,6 +2,7 @@ import os
 import uuid
 import urllib2
 import shutil
+import logging
 
 class Downloader(object):
     def __init__(self, destination, data):
@@ -20,10 +21,10 @@ class Downloader(object):
     def download(self):
         result = True
 
-        os.makedirs(self._destination)
+        for file_path, url in self._data:
+            local_file = os.path.join(self._destination, file_path)
 
-        for file_name, url in self._data:
-            local_file = os.path.join(self._destination, "{}.jpg".format(file_name))
+            os.makedirs(os.path.dirname(local_file))
 
             resp = urllib2.urlopen(url)
 
@@ -35,6 +36,8 @@ class Downloader(object):
                     if not chunk:
                         break
                     f.write(chunk)
+            except Exception as e:
+                logging("Error while downloading url: ex = {}, url = {}".format(e, url))
             finally:
                 f.flush()
                 f.close()
