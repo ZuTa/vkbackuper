@@ -2,11 +2,15 @@ class Album(object):
     def __init__(self, _id, title):
         self._id = _id
         self._title = title
-        
+
+    @property
+    def uid(self):
+        return self._id
+
     @property
     def title(self):
         return self._title
-    
+
 
 class Photo(object):
     def __init__(self, _id, album_id, description, date, url):
@@ -20,7 +24,7 @@ class Photo(object):
     @property
     def album_id(self):
         return self._album_id
-    
+
     @property
     def album(self):
         return self._album

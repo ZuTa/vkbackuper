@@ -38,27 +38,39 @@ def parse_photos(items, callback):
 
         callback(Photo(int(item['id']), int(item['album_id']), item['text'], datetime.fromtimestamp(float(item['date']) / 1e3), url))
 
+def retrieve_albums(access_token, album_ids):
+    albums = dict.fromkeys(album_ids, None)
+
+    url = common.create_method_url(GET_ALBUMS, access_token, album_ids=','.join(map(str, album_ids)))
+    json = common.make_method_request(url)
+
+    items = json['items']
+    for item in items:
+        album = Album(int(item['id']), item['title'])
+
+        albums[album.uid] = album
+
+    return albums
+
 def get_all_photos(access_token):
-    def inject_album(photo):
-        url = common.create_method_url(GET_ALBUMS, access_token, album_ids=photo.album_id, count=1)
-        json = common.make_method_request(url)
-
-        parsed_album = json['items'][0]
-
-        photo.album = Album(int(parsed_album['id']), parsed_album['title'])
-
-        return photo
-
     result = []
     offset = 0
     while True:
         url = common.create_method_url(GET_ALL, access_token, count=MAX_PHOTOS_TO_RETURN, offset=offset)
         json = common.make_method_request(url)
 
-        parse_photos(json['items'], lambda photo: result.append(inject_album(photo)))
+        parse_photos(json['items'], result.append)
 
         offset += len(json['items'])
         if int(json['count']) - offset == 0:
             break
+
+    # retrieve albums
+    album_ids = set([photo.album_id for photo in result])
+    albums = retrieve_albums(access_token, album_ids)
+
+    # inject albums into photo objects
+    for photo in result:
+        photo.album = albums[photo.album_id]
 
     return result
