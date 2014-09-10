@@ -2,11 +2,14 @@ import os
 import zipfile
 import sys
 
+
 def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
         for f in files:
             rel = os.path.relpath(root, path)
             dest = os.path.join(rel, f)
+            # force to unicode (as folders/files may have special chars)
+            dest = unicode(dest, 'utf-8')
 
             zip.write(os.path.join(root, f), dest)
 

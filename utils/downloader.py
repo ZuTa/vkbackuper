@@ -24,7 +24,9 @@ class Downloader(object):
         for file_path, url in self._data:
             local_file = os.path.join(self._destination, file_path)
 
-            os.makedirs(os.path.dirname(local_file))
+            dir_name = os.path.dirname(local_file)
+            if not os.path.exists(dir_name):
+                os.makedirs(dir_name)
 
             resp = urllib2.urlopen(url)
 
