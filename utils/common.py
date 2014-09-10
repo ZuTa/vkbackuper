@@ -20,13 +20,6 @@ def fetch_folder_path(path, locker):
 
     return downloads_path
 
-class Packer(object):
-    def __init__(self, data, callback):
-        self._data = data
-        self._callback = callback
-
-
-
 def pack(_data, callback):
     def inner(data, locker):
         downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER, locker)
