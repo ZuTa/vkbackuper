@@ -1,8 +1,8 @@
 import os, bottle, logging
 
-from models import photos
 from utils import common
 from api import auth, users, photos
+from models import photos as models_photos
 from beaker.middleware import SessionMiddleware
 
 
@@ -72,7 +72,7 @@ def download_photos():
     all_photos = photos.get_all_photos(user.access_token)
     logging.info('End retrieving info about photos for user with {} id'.format(user.user_id))
 
-    name_to_url = photos.name_to_url(all_photos)
+    name_to_url = models_photos.name_to_url(all_photos)
 
     logging.info('Downloading and packing photos for user with {} id'.format(user.user_id))
     arc = common.pack(name_to_url)
