@@ -1,3 +1,27 @@
+import os, re
+
+
+def name_to_url(photos):
+    """Returns list of tuples. Each tuple represents relation: extended name(album+photo) to photo's url
+    """
+    def replace_spaces(s):
+        s = s.strip()
+        return re.sub(r'\s+','_', s)
+
+    result = []
+    d = {}
+    for photo in photos:
+        album_title = replace_spaces(photo.album.title)
+        album_id = photo.album_id
+        if album_id not in d:
+            d[album_id] = 0
+
+        d[album_id] += 1
+        result.append((os.path.join(album_title, '{}.jpg'.format(d[album_id])), photo.url))
+
+    return result
+
+
 class Album(object):
     def __init__(self, _id, title):
         self._id = _id
