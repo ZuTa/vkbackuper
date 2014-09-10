@@ -14,7 +14,7 @@ def get_photo_albums_count(access_token):
 
     res = common.make_request(url)
 
-    return res['response']
+    return int(res['response'])
 
 def get_all_photos_count(access_token):
     url = common.create_method_url(GET_ALL, access_token)
