@@ -1,5 +1,4 @@
-import common
-import re
+import common, re, logging
 
 from models.photos import Photo, Album
 from datetime import datetime
@@ -8,6 +7,7 @@ from datetime import datetime
 MAX_PHOTOS_TO_RETURN = 200
 GET_ALBUMS_COUNT = 'photos.getAlbumsCount'
 GET_ALL = 'photos.getAll'
+GET_ALBUMS = 'photos.getAlbums'
 
 def get_photo_albums_count(access_token):
     url = common.create_method_url(GET_ALBUMS_COUNT, access_token)
@@ -40,12 +40,8 @@ def parse_photos(items, callback):
 
 def get_all_photos(access_token):
     def inject_album(photo):
-        # TODO: retrieve album
-        url = common.create_method_url(GET_ALBUMS_COUNT, access_token, album_ids=photo.album_id)
+        url = common.create_method_url(GET_ALBUMS, access_token, album_ids=photo.album_id, count=1)
         json = common.make_method_request(url)
-
-        if int(json['count']) != 1:
-            raise Exception('Cannot retrieve photo album with id = {}'.format(photo.album_id))
 
         parsed_album = json['items'][0]
 
