@@ -3,6 +3,7 @@ import os, bottle, logging
 from utils import common
 from api import auth, users, photos, audio
 from models import photos as models_photos
+from models import audio as models_audio
 from beaker.middleware import SessionMiddleware
 
 
@@ -63,22 +64,33 @@ def welcome():
 
     return args
 
-@bottle.route('/download-photos')
-def download_photos():
+@bottle.route('/pack-photos')
+def pack_photos():
     if is_session_new():
         bottle.redirect('/')
 
     user = get_user()
 
-    logging.info('Start retrieving info about photos for user with {} id'.format( user.user_id))
     all_photos = photos.get_all_photos(user.access_token)
-    logging.info('End retrieving info about photos for user with {} id'.format(user.user_id))
 
     name_to_url = models_photos.name_to_url(all_photos)
 
-    logging.info('Downloading and packing photos for user with {} id'.format(user.user_id))
     arc = common.pack(name_to_url)
-    logging.info('Done for user with {} id'.format(user.user_id))
+
+    return '/archive/{}'.format(arc)
+
+@bottle.route('/pack-audio')
+def pack_audio():
+    if is_session_new():
+        bottle.redirect('/')
+
+    user = get_user()
+
+    all_audio = audio.get_all_audio(user.access_token)
+
+    name_to_url = models_audio.name_to_url(all_audio)
+
+    arc = common.pack(name_to_url)
 
     return '/archive/{}'.format(arc)
 

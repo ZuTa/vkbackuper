@@ -16,7 +16,7 @@
     <div>
         You have {{photos_count}} photos and {{photo_albums_count}} albums. Would you like to have them on your local computer?
         <button id="retrieve-photos-button" type="button">Load my photos</button>
-        <span id="waiting-text" style="display:none;">loading...</span>
+        <span id="waiting-photo-text" style="display:none;">loading...</span>
         <a id="download-photos-link" style="display:none;">Download</a>
     </div>
 
@@ -24,23 +24,32 @@
 
     <div>
         You have {{audio_count}} audio tracks. Would you like to have them on your local computer?
+        <button id="retrieve-audio-button" type="button">Load my audio</button>
+        <span id="waiting-audio-text" style="display:none;">loading...</span>
+        <a id="download-audio-link" style="display:none;">Download</a>
     </div>
 
 
     <script>
         $(function() {
-            $("#retrieve-photos-button").click(function() {
-                $(this).prop('disabled', true);
-                $("#waiting-text").toggle();
+            var retrieve = function(btn, waitElement, linkElement, url) {
+                btn.click(function() {
+                    $(this).prop('disabled', true);
+                    waitElement.toggle();
 
-                $.get("download-photos",
-                    function(arc) {
-                        $("#waiting-text").toggle();
-                        $("#download-photos-link").attr("href", arc);
-                        $("#download-photos-link").toggle();
-                    }
-                );
-            });
+                    $.get(url,
+                        function(arc) {
+                            waitElement.toggle();
+                            linkElement.attr("href", arc);
+                            linkElement.toggle();
+                        }
+                    );
+                });
+            }
+
+            retrieve($("#retrieve-photos-button"), $("#waiting-photo-text"), $("#download-photos-link"), "pack-photos");
+
+            retrieve($("#retrieve-audio-button"), $("#waiting-audio-text"), $("#download-audio-link"), "pack-audio");
         });
     </script>
 </body>

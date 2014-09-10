@@ -3,7 +3,7 @@ import common
 from models.audio import Audio, AudioAlbum
 
 
-MAX_AUDIO_TO_RETURN = 200
+MAX_AUDIO_TO_RETURN = 100
 GET_AUDIO_COUNT = "audio.getCount"
 GET_AUDIO = "audio.get"
 GET_ALBUMS= "audio.getAlbums"
@@ -32,7 +32,7 @@ def retrieve_audio_albums(access_token):
 
         items = json['items']
         for item in items:
-            album = AudioAlbum(int(item['id']), item['title'])
+            album = AudioAlbum(int(item['id']), str(item['title']))
 
             albums[album.uid] = album
 
@@ -55,11 +55,11 @@ def get_all_audio(access_token):
         if int(json['count']) - offset == 0:
             break
 
-    albums = retrieve_audio_albums(access_token, album_ids)
+    albums = retrieve_audio_albums(access_token)
 
     # inject albums into audio objects
     for audio in result:
         if audio.album_id != 0:
             audio.album = albums[audio.album_id]
 
-    return result
+    return result[:10]
