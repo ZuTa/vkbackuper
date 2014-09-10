@@ -1,4 +1,4 @@
-import os, re
+import os
 
 from downloader import Downloader
 from archivator import Archivator
@@ -7,7 +7,7 @@ from archivator import Archivator
 DOWNLOADS_FOLDER = "downloads"
 ARCHIVES_FOLDER = "archives"
 
-def fetch_folder_path(path, locker):
+def fetch_folder_path(path):
     current_dir = os.path.dirname(__file__)
     downloads_path = os.path.join(current_dir, path)
 
@@ -17,8 +17,8 @@ def fetch_folder_path(path, locker):
     return downloads_path
 
 def pack(data):
-    downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER, locker)
-    archives_folder = fetch_folder_path(ARCHIVES_FOLDER, locker)
+    downloads_folder = fetch_folder_path(DOWNLOADS_FOLDER)
+    archives_folder = fetch_folder_path(ARCHIVES_FOLDER)
 
     downloader = Downloader(downloads_folder, data)
     if downloader.download():

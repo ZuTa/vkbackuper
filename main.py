@@ -78,7 +78,7 @@ def download_photos():
     arc = common.pack(name_to_url)
     logging.info('Done for user with {} id'.format(user.user_id))
 
-    bottle.redirect('/archive/{}'.format(arc))
+    return '/archive/{}'.format(arc)
 
 @bottle.route('/archive/<arcname>')
 def download_archive(arcname):
