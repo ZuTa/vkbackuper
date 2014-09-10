@@ -1,7 +1,7 @@
 import os, bottle, logging
 
 from utils import common
-from api import auth, users, photos
+from api import auth, users, photos, audio
 from models import photos as models_photos
 from beaker.middleware import SessionMiddleware
 
@@ -58,6 +58,8 @@ def welcome():
     args['photo_albums_count'] = photos.get_photo_albums_count(user.access_token)
 
     args['photos_count'] = photos.get_all_photos_count(user.access_token)
+
+    args['audio_count'] = audio.get_audio_count(user.access_token, user.user_id)
 
     return args
 

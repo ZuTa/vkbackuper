@@ -14,10 +14,16 @@
     </p>
 
     <div>
-        You have {{photos_count}} photos and {{photo_albums_count}} albums. Do you want to get it all on your local computer?
-        <button id="retrieve-photos-button" type="button">Retrieve my photos</button>
-        <span id="waiting-text" style="display:none;">retrieving...</span>
+        You have {{photos_count}} photos and {{photo_albums_count}} albums. Would you like to have them on your local computer?
+        <button id="retrieve-photos-button" type="button">Load my photos</button>
+        <span id="waiting-text" style="display:none;">loading...</span>
         <a id="download-photos-link" style="display:none;">Download</a>
+    </div>
+
+    <br/>
+
+    <div>
+        You have {{audio_count}} audio tracks. Would you like to have them on your local computer?
     </div>
 
 

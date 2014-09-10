@@ -5,7 +5,7 @@ from models.users import User
 
 
 CONFIG_FILE = 'config.json'
-OAUTH_URL_PATTERN = 'https://oauth.vk.com/authorize?client_id={0}&scope=photos&redirect_uri={1}&response_type=code&v={2}'
+OAUTH_URL_PATTERN = 'https://oauth.vk.com/authorize?client_id={0}&scope=photos,audio&redirect_uri={1}&response_type=code&v={2}'
 TOKEN_URL_PATTERN = 'https://oauth.vk.com/access_token?client_id={0}&client_secret={1}&code={2}&redirect_uri={3}'
 
 config = None
