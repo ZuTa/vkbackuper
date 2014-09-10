@@ -61,9 +61,6 @@ def welcome():
 
     return args
 
-def on_arcive_ready(arc):
-    bottle.redirect('/archive/{}'.format(arc))
-
 @bottle.route('/download-photos')
 def download_photos():
     if is_session_new():
@@ -78,8 +75,10 @@ def download_photos():
     name_to_url = models_photos.name_to_url(all_photos)
 
     logging.info('Downloading and packing photos for user with {} id'.format(user.user_id))
-    common.pack(name_to_url, on_arcive_ready)
+    arc = common.pack(name_to_url)
     logging.info('Done for user with {} id'.format(user.user_id))
+
+    bottle.redirect('/archive/{}'.format(arc))
 
 @bottle.route('/archive/<arcname>')
 def download_archive(arcname):
