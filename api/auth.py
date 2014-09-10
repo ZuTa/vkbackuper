@@ -1,7 +1,7 @@
 import json
 import common
 
-from models.user import User
+from models.users import User
 
 
 CONFIG_FILE = 'config.json'

@@ -70,7 +70,7 @@ def download_photos():
     logging.info('Start retrieving info about photos for user with {} id'.format( user.user_id))
     all_photos = photos.get_all_photos(user.access_token)
     logging.info('End retrieving info about photos for user with {} id'.format(  user.user_id))
-
+    return all_photos[100].album.title
     name_to_url = zip(xrange(len(all_photos)), [photo.url for photo in all_photos])
 
     logging.info('Downloading and packing photos for user with {} id'.format(  user.user_id))
