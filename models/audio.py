@@ -7,6 +7,10 @@ class AudioAlbum(object):
     def title(self):
         return self._title
 
+    @property
+    def uid(self):
+        return self._id
+
 
 class Audio(object):
     def __init__(self, _id, album_id, artist, title, url):
