@@ -29,6 +29,9 @@
         <a id="download-audio-link" style="display:none;">Download</a>
     </div>
 
+    <div>
+        Google Drive. <button id="authorize-button" style="visibility: hidden">Authorize</button> <span id="gd-linked" style="display: none; color:red;"> Linked </span>
+    </div>
 
     <script>
         $(function() {
@@ -48,10 +51,43 @@
             }
 
             retrieve($("#retrieve-photos-button"), $("#waiting-photo-text"), $("#download-photos-link"), "pack-photos");
-
             retrieve($("#retrieve-audio-button"), $("#waiting-audio-text"), $("#download-audio-link"), "pack-audio");
         });
     </script>
+
+    <script>
+        var clientId = '670624754813-bqnjav9r2qitrf6tfcdiagnt4gjvsdq2.apps.googleusercontent.com';
+        var scopes = 'https://www.googleapis.com/auth/drive';
+
+        // Use a button to handle authentication the first time.
+        function handleClientLoad() {
+            window.setTimeout(checkAuth, 1);
+        }
+
+        function checkAuth() {
+            gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
+        }
+
+        function handleAuthResult(authResult) {
+            var authorizeButton = document.getElementById('authorize-button');
+
+            if (authResult && !authResult.error) {
+                authorizeButton.style.visibility = 'hidden';
+                console.log("Logged to GDrive");
+                document.getElementById("gd-linked").style.display = 'inline';
+                // do something here
+            } else {
+                authorizeButton.style.visibility = '';
+                authorizeButton.onclick = handleAuthClick;
+            }
+        }
+
+        function handleAuthClick(event) {
+            gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, handleAuthResult);
+            return false;
+        }
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
 </body>
 
 </html>
