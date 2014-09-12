@@ -26,6 +26,13 @@ def get_user():
 
     return session['user']
 
+@bottle.route('/landing-page')
+@bottle.view('landing_page')
+def landing_page():
+    args = { "get_url" : application.get_url }
+
+    return args
+
 @bottle.route('/')
 def index():
     if is_session_new():
@@ -98,6 +105,10 @@ def pack_audio():
 def download_archive(arcname):
     return bottle.static_file(arcname, root=archive_path)
 
+@bottle.route('/static/:path#.+#', name='static')
+def static(path):
+    return bottle.static_file(path, root='static')
+
 
 log_file_path = os.path.join(current_dir(), 'debug.log')
 
@@ -116,5 +127,8 @@ session_opts = {
     'session.auto': True
 }
 
-application = SessionMiddleware(bottle.default_app(), session_opts)
-bottle.debug(True)
+#application = SessionMiddleware(bottle.default_app(), session_opts)
+application = bottle.default_app()
+#bottle.debug(True)
+
+bottle.run(app=application, reloader=True)
