@@ -4,7 +4,6 @@ from utils import common
 from api import auth, users, photos, audio
 from models import photos as models_photos
 from models import audio as models_audio
-from beaker.middleware import SessionMiddleware
 
 
 ARCHIVES_RELATIVE_PATH = "utils/archives"
@@ -26,19 +25,12 @@ def get_user():
 
     return session['user']
 
-@bottle.route('/landing-page')
-@bottle.view('landing_page')
-def landing_page():
+@bottle.route('/')
+@bottle.view('main')
+def index():
     args = { "get_url" : application.get_url }
 
     return args
-
-@bottle.route('/')
-def index():
-    if is_session_new():
-        bottle.redirect(auth_url)
-    else:
-        bottle.redirect('/welcome')
 
 @bottle.route('/login')
 def login():
@@ -120,15 +112,5 @@ archive_path = os.path.join(current_dir(), ARCHIVES_RELATIVE_PATH)
 auth.init()
 auth_url = auth.get_auth_url(REDIRECT_URI)
 
-session_opts = {
-    'session.type': 'file',
-    'session.cookie_expires': 43200,
-    'session.data_dir': './data',
-    'session.auto': True
-}
-
-#application = SessionMiddleware(bottle.default_app(), session_opts)
 application = bottle.default_app()
-#bottle.debug(True)
-
-bottle.run(app=application, reloader=True)
+bottle.debug(True)
