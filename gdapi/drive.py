@@ -25,7 +25,7 @@ class DriveService(object):
         return json.loads(self._drive_service.files().insert(body=body).execute())
 
 
-    def upload_file(self, file_path):
+    def upload_file(self, file_path, folder=None):
         media_body = MediaFileUpload(file_path, mimetype='text/plain', resumable=True)
         body = {
           'title': 'ZUTA',
