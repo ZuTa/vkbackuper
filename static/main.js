@@ -1,6 +1,10 @@
 $(function() {
     var popupOptions = "width=780,height=410,toolbar=0,scrollbars=0,status=0,resizable=0,location=0,menuBar=0,left=800,top=500";
 
+    $('.backup-button').click(function() {
+        $.get("/backup");
+    });
+
     var vkSigninWin = null;
     $('.vk-authorize').click(function() {
         vkSigninWin = window.open("/vk-authorize", "Sign-in to VK", popupOptions);

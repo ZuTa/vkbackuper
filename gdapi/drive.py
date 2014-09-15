@@ -1,4 +1,5 @@
 import httplib2
+import simplejson as json
 
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
@@ -17,11 +18,11 @@ class DriveService(object):
 
     def create_folder(self, folder_name):
         body = {
-          'title': 'NEW FOLDER',
+          'title': folder_name,
           'mimeType': 'application/vnd.google-apps.folder'
         }
 
-        return self._drive_service.files().insert(body=body).execute()
+        return json.loads(self._drive_service.files().insert(body=body).execute())
 
 
     def upload_file(self, file_path):
@@ -32,4 +33,4 @@ class DriveService(object):
           'mimeType': 'text/plain'
         }
 
-        return self._drive_service.files().insert(body=body, media_body=media_body).execute()
+        return json.loads(self._drive_service.files().insert(body=body, media_body=media_body).execute())

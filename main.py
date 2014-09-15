@@ -3,8 +3,6 @@ import simplejson as json
 
 from utils import common
 from vkapi import auth, users, photos, audio
-from models import photos as models_photos
-from models import audio as models_audio
 from gdapi import gdauth, drive
 
 
@@ -102,6 +100,12 @@ def get_vk_user():
             return json.dumps({"result" : "error"})
 
     return json.dumps({"result" : "error", "message" : "Only ajax requests allowed"});
+
+@bottle.route('/backup')
+def backup():
+    #TODO: check if user has completed all steps
+    logging.info("start backuping")
+    common.backup(gd_service, photos.get_all_photos(vk_user.access_token), audio.get_all_audio(vk_user.access_token))
 
 @bottle.route('/static/:path#.+#', name='static')
 def static(path):

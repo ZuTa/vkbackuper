@@ -1,4 +1,4 @@
-import os, time
+import os, time, logging
 
 from downloader import Downloader
 from archivator import Archivator
@@ -27,5 +27,20 @@ def pack(data):
 
     return os.path.basename(archivator.destination)
 
-def backup(drive_service, photos, audio_tracks):
-    root_folder = drive_service.create_folder("VK BACKUP %s" % time.strftime("%d-%m-%Y %H:%M:%S"))
+class Backuper(object):
+
+    def __init__(self, drive_service):
+        self._drive_service = drive_service
+
+    def backup(self, photos, audio_tracks):
+        root_folder = self._drive_service.create_folder("VK BACKUP %s" % time.strftime("%d-%m-%Y %H:%M:%S"))
+
+        self._backup_photos(root_folder, photos)
+
+    def _backup_photos(root_folder, photos):
+        folders = {}
+
+        for photo in photos:
+            pass
+
+
