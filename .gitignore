@@ -1,7 +1,8 @@
 utils/archives
 utils/downloads
 
-api/config.json
+vkapi/config.json
+gdapi/config.json
 gaenv
 
 *.swp
