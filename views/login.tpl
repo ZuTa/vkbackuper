@@ -1,6 +1,6 @@
 <html>
     <head>
-        % include('base-head.tpl', title='VK Authentication')
+        % include('base-head.tpl')
 
         <style>
             p.text {
@@ -14,9 +14,11 @@
         </p>
 
         <script>
+            var COOKIE = "{{cookie_name}}";
+
             $(function() {
                 setTimeout(function() {
-                    var val = $.cookie("vk-authorize");
+                    var val = $.cookie(COOKIE);
                     if (val) {
                         window.close();
                     }

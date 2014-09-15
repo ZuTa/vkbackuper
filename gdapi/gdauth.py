@@ -16,16 +16,19 @@ class GDAuthorizationFlow(object):
     def init(self):
         def get_config():
             current_dir = os.path.dirname(__file__)
-            config_file_path = os.path.join(current_dir, CONFIG_FILE) 
+            config_file_path = os.path.join(current_dir, CONFIG_FILE)
 
             return json.loads(open(config_file_path, 'r').read())
 
         config = get_config()
 
-        self.flow = OAuth2WebServerFlow(client_id=config['client_id'],
+        self._flow = OAuth2WebServerFlow(client_id=config['client_id'],
                                         client_secret=config['client_secret'],
                                         scope=self._scope,
                                         redirect_uri=self._redirect_uri)
 
     def get_authorize_url(self):
-        return self.flow.step1_get_authorize_url()
+        return self._flow.step1_get_authorize_url()
+
+    def get_credentials(self, code):
+        return self._flow.step2_exchange(code)

@@ -5,16 +5,24 @@ from utils import common
 from vkapi import auth, users, photos, audio
 from models import photos as models_photos
 from models import audio as models_audio
+from gdapi import gdauth
 
 
 ARCHIVES_RELATIVE_PATH = "utils/archives"
-REDIRECT_URI = 'http://zuta.pythonanywhere.com/vk-login'
+
+REDIRECT_VK_URI = 'http://zuta.pythonanywhere.com/vk-login'
 VK_AUTHORIZE_COOKIE = "vk-authorize"
+
+GD_SCOPE = "https://www.googleapis.com/auth/drive"
+GD_REDIRECT_URI = 'http://zuta.pythonanywhere.com/auth_return'
+GD_AUTHORIZE_COOKIE = "gd-authorize"
 
 auth_url = None
 arhive_path = None
-
 vk_user = None
+
+gd_flow = None
+gd_credentials = None
 
 def current_dir():
     return os.path.dirname(__file__)
@@ -23,6 +31,34 @@ def current_dir():
 @bottle.view('main')
 def index():
     args = { "get_url" : application.get_url }
+
+    return args
+
+@bottle.route('/gd-authorize')
+def gd_authorize():
+    global gd_flow
+
+    bottle.response.set_cookie(GD_AUTHORIZE_COOKIE, "", expires=0)
+
+    gd_flow = gdauth.GDAuthorizationFlow(GD_SCOPE, GD_REDIRECT_URI)
+    gd_flow.init()
+
+    url = gd_flow.get_authorize_url()
+
+    bottle.redirect(url)
+
+@bottle.route('/auth_return')
+@bottle.view('login')
+def gd_auth_return():
+    args = { "get_url" : application.get_url, "cookie_name" : GD_AUTHORIZE_COOKIE }
+
+    result = False
+    if bottle.request.query.code:
+        global gd_credentials
+        gd_credentials = gd_flow.get_credentials(bottle.request.query.code)
+        result = True
+
+    bottle.response.set_cookie(GD_AUTHORIZE_COOKIE, "1" if result else "0")
 
     return args
 
@@ -35,19 +71,16 @@ def vk_authorize():
 @bottle.route('/vk-login')
 @bottle.view('login')
 def vk_login():
-    args = { "get_url" : application.get_url }
+    args = { "get_url" : application.get_url, "cookie_name" : VK_AUTHORIZE_COOKIE}
 
     result = False
     if bottle.request.query.code:
         try:
             global vk_user
-            vk_user = auth.login(bottle.request.query.code, REDIRECT_URI)
+            vk_user = auth.login(bottle.request.query.code, REDIRECT_VK_URI)
             result = True
         except Exception:
             result = False
-    else:
-        bottle.response.set_cookie(VK_AUTHORIZE_COOKIE, "0")
-        return 'Something went wrong with authorization. Try again. (error:' + bottle.request.query.error + ' - ' + bottle.request.query.error_description + ')'
 
     bottle.response.set_cookie(VK_AUTHORIZE_COOKIE, "1" if result else "0")
 
@@ -123,7 +156,7 @@ logging.info(log_file_path)
 archive_path = os.path.join(current_dir(), ARCHIVES_RELATIVE_PATH)
 
 auth.init()
-auth_url = auth.get_auth_url(REDIRECT_URI)
+auth_url = auth.get_auth_url(REDIRECT_VK_URI)
 
 application = bottle.default_app()
 bottle.debug(True)
