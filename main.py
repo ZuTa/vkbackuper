@@ -2,13 +2,13 @@ import os, bottle, logging
 import simplejson as json
 
 from utils import common
-from api import auth, users, photos, audio
+from vkapi import auth, users, photos, audio
 from models import photos as models_photos
 from models import audio as models_audio
 
 
 ARCHIVES_RELATIVE_PATH = "utils/archives"
-REDIRECT_URI = 'http://zuta.pythonanywhere.com/login'
+REDIRECT_URI = 'http://zuta.pythonanywhere.com/vk-login'
 VK_AUTHORIZE_COOKIE = "vk-authorize"
 
 auth_url = None
@@ -32,9 +32,9 @@ def vk_authorize():
 
     bottle.redirect(auth_url)
 
-@bottle.route('/login')
+@bottle.route('/vk-login')
 @bottle.view('login')
-def login():
+def vk_login():
     args = { "get_url" : application.get_url }
 
     result = False
