@@ -1,4 +1,5 @@
 import os, bottle, logging
+import simplejson as json
 
 from utils import common
 from api import auth, users, photos, audio
@@ -8,22 +9,15 @@ from models import audio as models_audio
 
 ARCHIVES_RELATIVE_PATH = "utils/archives"
 REDIRECT_URI = 'http://zuta.pythonanywhere.com/login'
+VK_AUTHORIZE_COOKIE = "vk-authorize"
 
 auth_url = None
 arhive_path = None
 
+vk_user = None
+
 def current_dir():
     return os.path.dirname(__file__)
-
-def is_session_new():
-    session = bottle.request.environ.get('beaker.session')
-
-    return session.get('user', None) is None
-
-def get_user():
-    session = bottle.request.environ.get('beaker.session')
-
-    return session['user']
 
 @bottle.route('/')
 @bottle.view('main')
@@ -32,27 +26,49 @@ def index():
 
     return args
 
+@bottle.route('/vk-authorize')
+def vk_authorize():
+    bottle.response.set_cookie(VK_AUTHORIZE_COOKIE, "", expires=0)
+
+    bottle.redirect(auth_url)
+
 @bottle.route('/login')
+@bottle.view('login')
 def login():
-    if not is_session_new():
-        bottle.redirect('/welcome')
+    args = { "get_url" : application.get_url }
 
+    result = False
     if bottle.request.query.code:
-        session = bottle.request.environ.get('beaker.session')
-        session['user'] = auth.login(bottle.request.query.code, REDIRECT_URI)
-
-        bottle.redirect('/welcome')
+        try:
+            global vk_user
+            vk_user = auth.login(bottle.request.query.code, REDIRECT_URI)
+            result = True
+        except Exception:
+            result = False
     else:
+        bottle.response.set_cookie(VK_AUTHORIZE_COOKIE, "0")
         return 'Something went wrong with authorization. Try again. (error:' + bottle.request.query.error + ' - ' + bottle.request.query.error_description + ')'
+
+    bottle.response.set_cookie(VK_AUTHORIZE_COOKIE, "1" if result else "0")
+
+    return args
+
+@bottle.route('/vk-user')
+def get_vk_user():
+    if bottle.request.is_ajax:
+        try:
+            ui = users.get_user_info(vk_user.access_token)
+
+            return json.dumps({"result" : "OK", "user":ui["user_name"]})
+        except:
+            #TODO: handle errors
+            return json.dumps({"result" : "error"})
+
+    return json.dumps({"result" : "error", "message" : "Only ajax requests allowed"});
 
 @bottle.route('/welcome')
 @bottle.view('welcome')
 def welcome():
-    if is_session_new():
-        bottle.redirect('/')
-
-    user = get_user()
-
     args = users.get_user_info(user.access_token)
 
     args['photo_albums_count'] = photos.get_photo_albums_count(user.access_token)
@@ -65,9 +81,6 @@ def welcome():
 
 @bottle.route('/pack-photos')
 def pack_photos():
-    if is_session_new():
-        bottle.redirect('/')
-
     user = get_user()
 
     all_photos = photos.get_all_photos(user.access_token)

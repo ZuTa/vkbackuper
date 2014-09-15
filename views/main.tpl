@@ -1,26 +1,6 @@
 <html>
-    <head>
-        <title>VK Backup</title>
-        <link rel="shortcut icon" type="image/x-icon" href="{{ get_url('static', path='favicon.png') }}" />
-        <link rel="stylesheet" type="text/css" href="{{ get_url('static', path='styles.css') }}"/>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-        <script type="text/javascript" src="{{ get_url('static', path='main.js') }}"></script>
-        <style>
-            @font-face {
-                font-family: 'attackofthecucumbers';
-                src: url('{{ get_url('static', path='attackofthecucumbers.ttf') }}');
-            }
-            body {
-                background-image: url("{{ get_url('static', path='bg.jpg') }}");
-                -moz-background-size: cover;
-                -webkit-background-size: cover;
-                background-size: cover;
-                background-position: top center !important;
-                background-repeat: no-repeat !important;
-                background-attachment: fixed;
-            }
-        </style>
-    </head>
+
+    % include('base-head.tpl')
 
     <body>
         <header>
@@ -32,7 +12,18 @@
             To backup your data from <a class="regular-link" href="http://vk.com">VK</a> you need to go through four simple steps:
 
             <ol type="1">
-                <li>Provide access to your VK profile. <a href="#" class="vk-authorize">Authorize</a> </li>
+                <li>
+                    Provide access to your VK profile.
+                    <a href="#" class="vk-authorize">Authorize</a>
+
+                    <span class="vk-authorized-text">
+                        (Authorized as <span class="vk-user"></span>)
+                    </span>
+
+                    <span class="vk-authorization-error">
+                        Not authorized!
+                    </span>
+                </li>
                 <li>Provide access to your Google Drive. <a href="#" class="google-drive-authorize">Authorize</a> </li>
                 <li>Choose what you would like to backup: <br/>
                     <div class="backup-items">
@@ -46,7 +37,7 @@
         </article>
         <footer>
             <span>
-                &copy; ZuTa, 2014
+                ZuTa &copy; 2014
             </span>
         </footer>
     </body>

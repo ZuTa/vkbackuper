@@ -60,7 +60,20 @@ article {
 li {
     margin-top: 20px;
     margin-bottom: 10px;
-} 
+}
+
+.vk-authorized-text {
+    display: none;
+}
+
+.vk-user {
+    text-decoration: underline;
+}
+
+.vk-authorization-error {
+    display:none;
+    color: red;
+}
 
 .vk-authorize {
     -moz-box-shadow:inset 0px 0px 0px 0px #ffffff;
