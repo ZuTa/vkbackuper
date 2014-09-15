@@ -17,8 +17,7 @@ GD_SCOPE = "https://www.googleapis.com/auth/drive"
 GD_REDIRECT_URI = 'http://zuta.pythonanywhere.com/auth_return'
 GD_AUTHORIZE_COOKIE = "gd-authorize"
 
-auth_url = None
-arhive_path = None
+vk_auth_url = None
 vk_user = None
 
 gd_flow = None
@@ -71,7 +70,7 @@ def gd_auth_return():
 def vk_authorize():
     bottle.response.set_cookie(VK_AUTHORIZE_COOKIE, "", expires=0)
 
-    bottle.redirect(auth_url)
+    bottle.redirect(vk_auth_url)
 
 @bottle.route('/vk-login')
 @bottle.view('login')
@@ -104,50 +103,6 @@ def get_vk_user():
 
     return json.dumps({"result" : "error", "message" : "Only ajax requests allowed"});
 
-@bottle.route('/welcome')
-@bottle.view('welcome')
-def welcome():
-    args = users.get_user_info(user.access_token)
-
-    args['photo_albums_count'] = photos.get_photo_albums_count(user.access_token)
-
-    args['photos_count'] = photos.get_all_photos_count(user.access_token)
-
-    args['audio_count'] = audio.get_audio_count(user.access_token, user.user_id)
-
-    return args
-
-@bottle.route('/pack-photos')
-def pack_photos():
-    user = get_user()
-
-    all_photos = photos.get_all_photos(user.access_token)
-
-    name_to_url = models_photos.name_to_url(all_photos)
-
-    arc = common.pack(name_to_url)
-
-    return '/archive/{}'.format(arc)
-
-@bottle.route('/pack-audio')
-def pack_audio():
-    if is_session_new():
-        bottle.redirect('/')
-
-    user = get_user()
-
-    all_audio = audio.get_all_audio(user.access_token)
-
-    name_to_url = models_audio.name_to_url(all_audio)
-
-    arc = common.pack(name_to_url)
-
-    return '/archive/{}'.format(arc)
-
-@bottle.route('/archive/<arcname>')
-def download_archive(arcname):
-    return bottle.static_file(arcname, root=archive_path)
-
 @bottle.route('/static/:path#.+#', name='static')
 def static(path):
     return bottle.static_file(path, root='static')
@@ -158,10 +113,8 @@ log_file_path = os.path.join(current_dir(), 'debug.log')
 logging.basicConfig(format='%(asctime)s %(message)s',filename=log_file_path, filemode='w', level=logging.DEBUG)
 logging.info(log_file_path)
 
-archive_path = os.path.join(current_dir(), ARCHIVES_RELATIVE_PATH)
-
 auth.init()
-auth_url = auth.get_auth_url(REDIRECT_VK_URI)
+vk_auth_url = auth.get_auth_url(REDIRECT_VK_URI)
 
 application = bottle.default_app()
 bottle.debug(True)
