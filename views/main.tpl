@@ -24,7 +24,14 @@
                         Not authorized!
                     </span>
                 </li>
-                <li>Provide access to your Google Drive. <a href="#" class="google-drive-authorize">Authorize</a> </li>
+                <li>
+                    Provide access to your Google Drive.
+                    <a href="#" class="google-drive-authorize">Authorize</a>
+
+                    <span class="gd-authorized-text">
+                        (Authorized)
+                    </span>
+                </li>
                 <li>Choose what you would like to backup: <br/>
                     <div class="backup-items">
                         <input name="photos" type="checkbox" checked/> <label for="photos">Photos</label> <br/>

@@ -5,7 +5,7 @@ from utils import common
 from vkapi import auth, users, photos, audio
 from models import photos as models_photos
 from models import audio as models_audio
-from gdapi import gdauth
+from gdapi import gdauth, drive
 
 
 ARCHIVES_RELATIVE_PATH = "utils/archives"
@@ -22,7 +22,7 @@ arhive_path = None
 vk_user = None
 
 gd_flow = None
-gd_credentials = None
+gd_service = None
 
 def current_dir():
     return os.path.dirname(__file__)
@@ -54,8 +54,13 @@ def gd_auth_return():
 
     result = False
     if bottle.request.query.code:
-        global gd_credentials
+        global gd_service
+
         gd_credentials = gd_flow.get_credentials(bottle.request.query.code)
+
+        gd_service = drive.DriveService(gd_credentials)
+        gd_service.init()
+
         result = True
 
     bottle.response.set_cookie(GD_AUTHORIZE_COOKIE, "1" if result else "0")

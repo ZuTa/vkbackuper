@@ -41,7 +41,7 @@ $(function() {
     function CheckGDLoginStatus() {
         if (gdSigninWin.closed) {
             if ($.cookie("gd-authorize") == "1") {
-                console.log("logged");
+                $(".gd-authorized-text").show();
             }
         }
         else setTimeout(CheckGDLoginStatus, 1000);
