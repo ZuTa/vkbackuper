@@ -25,7 +25,7 @@ def name_to_url(photos):
 class Album(object):
     def __init__(self, _id, title):
         self._id = _id
-        self._title = title
+        self._title = title.encode('UTF-8')
 
     @property
     def uid(self):
@@ -41,7 +41,7 @@ class Photo(object):
         self._id = _id
         self._album_id = album_id
         self._album = None
-        self._description = description
+        self._description = description.encode('UTF-8')
         self._date = date
         self._url = url
 

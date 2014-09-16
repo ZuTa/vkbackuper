@@ -1,4 +1,4 @@
-import os, time, logging
+import os, time, logging, re
 
 from downloader import Downloader
 
@@ -29,28 +29,46 @@ class Backuper(object):
 
         self._backup_photos(root_folder, photos)
 
-    def _backup_photos(root_folder, photos):        
+    def _backup_photos(self, root_folder, photos):
+        logging.info("start uploading photos")
         folders = {}
         counters = {}
         for photo in photos:
             album_title = replace_spaces(photo.album.title)
 
+            logging.info("processing {} {}".format(album_title, photo.url))
+
             album_id = photo.album_id
             if album_id not in counters:
                 counters[album_id] = 0
-                folders[album_id] = self._drive_service.create_folder(album_title)
+                folders[album_id] = self._drive_service.create_folder(album_title, parent_id=root_folder["id"])
 
             counters[album_id] += 1
 
-            local_file = downloader.download(photo.url)
+            logging.info("downloading")
+            local_file = self._downloader.download(photo.url)
+            logging.info("done")
 
-            self._drive_service.upload_file(local_file, folder=folders[album_id])
+            logging.info("uploading to GD")
+            self._drive_service.upload_file(local_file, "{}.jpg".format(counters[album_id]), folder_id=folders[album_id]["id"])
+            logging.info("done")
 
+            logging.info("removing from file system")
+            os.remove(local_file)
+            logging.info("done")
 
-def backup(drive_service, photos, audio_tracks):
+            logging.info("PROCESSED")
+
+def wrapper(drive_service, photos, audio_tracks):
     temp_folder = fetch_folder_path(TEMP_FOLDER)
 
     downloader = Downloader(temp_folder)
 
     backuper = Backuper(drive_service, downloader)
-    backuper.backup(photos[:5], audio_tracks)
+    backuper.backup(photos, audio_tracks)
+
+def backup(drive_service, photos, audio_tracks):
+    import threading
+    t = threading.Thread(target=wrapper, args=[drive_service, photos, audio_tracks])
+    t.setDaemon(True)
+    t.start()

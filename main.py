@@ -52,7 +52,6 @@ def gd_auth_return():
     result = False
     if bottle.request.query.code:
         global gd_service
-
         gd_credentials = gd_flow.get_credentials(bottle.request.query.code)
 
         gd_service = drive.DriveService(gd_credentials)
