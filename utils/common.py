@@ -59,16 +59,11 @@ class Backuper(object):
 
             logging.info("PROCESSED")
 
-def wrapper(drive_service, photos, audio_tracks):
+
+def backup(drive_service, photos, audio_tracks):
     temp_folder = fetch_folder_path(TEMP_FOLDER)
 
     downloader = Downloader(temp_folder)
 
     backuper = Backuper(drive_service, downloader)
-    backuper.backup(photos, audio_tracks)
-
-def backup(drive_service, photos, audio_tracks):
-    import threading
-    t = threading.Thread(target=wrapper, args=[drive_service, photos, audio_tracks])
-    t.setDaemon(True)
-    t.start()
+    backuper.backup(photos[:5], audio_tracks)
