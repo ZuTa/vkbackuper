@@ -1,31 +1,24 @@
 import os
-import simplejson as json
 
-from oauth2client.client import OAuth2WebServerFlow
+from oauth2client.client import flow_from_clientsecrets
 
 
 CONFIG_FILE = 'config.json'
 
 class GDAuthorizationFlow(object):
 
-    def __init__(self, scope, redirect_uri):
+    def __init__(self, scope, redirect_uri, force=False):
         self._flow = None
         self._scope = scope
         self._redirect_uri = redirect_uri
+        self._force = force
 
     def init(self):
-        def get_config():
-            current_dir = os.path.dirname(__file__)
-            config_file_path = os.path.join(current_dir, CONFIG_FILE)
+        config_file_path = os.path.join(os.path.dirname(__file__), CONFIG_FILE)
 
-            return json.loads(open(config_file_path, 'r').read())
-
-        config = get_config()
-
-        self._flow = OAuth2WebServerFlow(client_id=config['client_id'],
-                                        client_secret=config['client_secret'],
-                                        scope=self._scope,
-                                        redirect_uri=self._redirect_uri)
+        self._flow = flow_from_clientsecrets(config_file_path, ' '.join(self._scope))
+        self._flow.redirect_uri = self._redirect_uri
+        self._flow.approval_prompt = self._force
 
     def get_authorize_url(self):
         return self._flow.step1_get_authorize_url()

@@ -11,7 +11,7 @@ ARCHIVES_RELATIVE_PATH = "utils/archives"
 REDIRECT_VK_URI = 'http://zuta.pythonanywhere.com/vk-login'
 VK_AUTHORIZE_COOKIE = "vk-authorize"
 
-GD_SCOPE = "https://www.googleapis.com/auth/drive"
+GD_SCOPE = ["https://www.googleapis.com/auth/drive"]
 GD_REDIRECT_URI = 'http://zuta.pythonanywhere.com/auth_return'
 GD_AUTHORIZE_COOKIE = "gd-authorize"
 
@@ -31,16 +31,21 @@ def index():
 
     return args
 
+def get_gd_authorize_url(force=False):
+    global gd_flow
+
+    gd_flow = gdauth.GDAuthorizationFlow(GD_SCOPE, GD_REDIRECT_URI, force=force)
+    gd_flow.init()
+
+    return gd_flow.get_authorize_url()
+
 @bottle.route('/gd-authorize')
 def gd_authorize():
-    global gd_flow
+
 
     bottle.response.set_cookie(GD_AUTHORIZE_COOKIE, "", expires=0)
 
-    gd_flow = gdauth.GDAuthorizationFlow(GD_SCOPE, GD_REDIRECT_URI)
-    gd_flow.init()
-
-    url = gd_flow.get_authorize_url()
+    url = get_gd_authorize_url()
 
     bottle.redirect(url)
 
@@ -52,10 +57,16 @@ def gd_auth_return():
     result = False
     if bottle.request.query.code:
         global gd_service
-        gd_credentials = gd_flow.get_credentials(bottle.request.query.code)
+        try:
+            gd_credentials = gd_flow.get_credentials(bottle.request.query.code)
 
-        gd_service = drive.DriveService(gd_credentials)
-        gd_service.init()
+            gd_service = drive.DriveService(gd_credentials)
+            gd_service.init()
+        except Exception, e:
+            logging("ERROR occurred while fetching Google Drive's credentials {}".format(e))
+            url = get_gd_authorize_url(True)
+
+            bottle.redirect(url)
 
         result = True
 
